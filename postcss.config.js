@@ -1,9 +1,30 @@
 module.exports = {
-    "plugins": {
-      "postcss-pxtorem": {
-          rootValue: 40, // 根据设计图尺寸写，设计图是1920，就写192
-          propList: ['*'], // 需要被转换的属性
-          selectorBlackList: [".van"] // 不进行px转换的选择器
-      }
+  plugins: {
+   
+    'postcss-pxtorem': {
+      rootValue:40,
+      propList: ['*']
     }
+  }
 }
+// const pxtorem = require('postcss-pxtorem')
+// const autoprefixer = require('autoprefixer')
+
+// module.exports = ({ file }) => {
+//   let rootValue
+//   if (file && file.dirname && file.dirname.indexOf('van') > -1) {
+//     rootValue = 16
+//   } else {
+//     rootValue = 40
+//   }
+//   return {
+//     plugins: [
+//       autoprefixer(),
+//       pxtorem({
+//         rootValue: rootValue,
+//         propList: ['*'],
+//         minPixelValue: 2
+//       })
+//     ]
+//   }
+// }

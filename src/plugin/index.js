@@ -23,6 +23,9 @@ export default {
             log(e) {
                 e.refresh();
               },
+              back(){
+                this.$router.back()
+              },
                $showLoading(){
                 loading.style.display = 'block'
                 loading.style.zIndex = 100

@@ -14,7 +14,7 @@
 export default {
   name:'App',
   created() {
-    this.$store.dispatch('user/checkLogin')
+  
   },
   data(){
     return {
@@ -59,6 +59,25 @@ export default {
 }
 </script>
 <style lang="scss">
+.sub{
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #fff;
+    z-index: 110;
+  
+      .header{
+          p{
+              padding: 0 15px;
+              text-align: left;
+              i{
+                  font-size: 16px;
+              }
+          }
+      }
+}
 .page {
   position: absolute;
   top: 0px;

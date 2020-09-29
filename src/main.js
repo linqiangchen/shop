@@ -18,6 +18,7 @@ Vue.use(VueLazyload, {
   loading:  '/assets/loading.jpg',
   attempt: 1
 })
+
 new Vue({
   store,
   router,

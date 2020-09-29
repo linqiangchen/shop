@@ -6,8 +6,8 @@
 <iscroll-view class="content" @scrollStart="log" ref="iscroll">
  <div class="user j-s-a">
         <div class="left j-s-a">
-            <img src="http://p4.music.126.net/pMVnViboITvn_KDmcfoaEA==/109951164873911421.jpg" alt="">
-            <p>花式傲娇冠菌</p>
+            <img :src="info.avatar" alt="">
+            <p>{{info.name}}</p>
         </div>
         <div class="right">
         <span>成为会员</span>
@@ -46,7 +46,7 @@
     <div class="logistics">
         <p class="tit">最新物流</p>
         <div class="detail j-s-a">
-        <img src="http://p1.music.126.net/bgp1zfjQ1K9npT6F894w5A==/109951165151246317.jpg" alt="">
+        <img src="http://p4.music.126.net/S-ALyDLWPk4NfLjbs8fB2A==/109951164722036328.jpg" alt="">
         <div class="right">
             <h3>运输中</h3>
             <p>【硬核守护】12星座守护项链 s925纯银</p>
@@ -56,34 +56,67 @@
 
     <div class="message">
         <ul>
-            <li class="j-s-a">
+            <li class="j-s-a" @click="toggleRouter('/')">
                 <span>我的优惠券</span>
                  <i class="iconfont iconyou-copy"></i>
             </li>
-            <li class="j-s-a">
+            <li class="j-s-a"  @click="toggleRouter('/mine/AddressList')">
                 <span>收货地址</span>
                  <i class="iconfont iconyou-copy"></i>
             </li>
-            <li class="j-s-a">
+            <li class="j-s-a"  @click="toggleRouter('/mine/userInfo')">
                 <span>个人信息</span>
+                 <i class="iconfont iconyou-copy"></i>
+            </li>
+            <li class="j-s-a"  @click="toggleRouter('/')">
+                <span>账户管理</span>
+                 <i class="iconfont iconyou-copy"></i>
+            </li>
+            <li class="j-s-a" @click="logout">
+                <span>退出登录</span>
                  <i class="iconfont iconyou-copy"></i>
             </li>
         </ul>
     </div>
 </iscroll-view>
-   
+   <router-view></router-view>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
 import HelloWorld from '@/components/HelloWorld.vue'
+import axios from 'axios'
+
+import {mapState} from 'vuex'
 
 export default {
   name: 'Mine',
   components: {
     HelloWorld
-  }
+  },
+  computed: {
+      ...mapState({
+          info:(state) => state.user.info
+      })
+  },
+  created() {
+      this.$store.dispatch('user/getInfo')
+  },
+  methods: {
+      logout(){
+          
+          axios.get('/api/user/logout').then((res)=>{
+              
+              if(res.data.code === 0){
+                  this.$router.replace('/login')
+              }
+          })
+      },
+      toggleRouter(path){
+          this.$router.push(path)
+      }
+  },
 }
 </script>
 
