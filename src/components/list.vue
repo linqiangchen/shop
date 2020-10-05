@@ -2,7 +2,7 @@
       <div class="recommend">
         <slot></slot>
         <ul>
-          <li v-for="item in 16" :key="item">
+          <li v-for="item in 16" :key="item" @click="link">
             <img
               src="http://p4.music.126.net/S-ALyDLWPk4NfLjbs8fB2A==/109951164722036328.jpg"
               alt=""
@@ -18,7 +18,11 @@
 
 <script>
 export default {
-
+  methods: {
+    link(){
+      this.$router.push({name:'detail'})
+    }
+  },
 }
 </script>
 
