@@ -27,6 +27,7 @@ import { AddressEdit } from 'vant';
 Vue.use(AddressEdit);
 import areaList from '../../../public/data/area'
 import { Toast } from 'vant';
+import axios from 'axios'
 export default {
     name:'Edit',
      data() {
@@ -36,8 +37,29 @@ export default {
     };
   },
   methods: {
-    onSave() {
+    onSave(address) {
       Toast('save');
+
+//       addressDetail: (...)
+// areaCode: (...)
+// city: "大同市"
+// country: ""
+// county: "平城区"
+// isDefault: true
+// name: "212"
+// postalCode: "578578"
+// province: "山西省"
+// tel: "13766345195"
+axios.post('/api/user/addAddress',{
+  name:address.name,
+  phone:address.tel,
+  location:address.province + address.city + address.county,
+  detail:address.addressDetail,
+  Postcode:address.postalCode,
+  isDefault:address.isDefault
+}).then((res)=>{
+  console.log(res);
+})
     },
     onDelete() {
       Toast('delete');

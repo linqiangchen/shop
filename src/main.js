@@ -8,6 +8,10 @@ import IScroll from 'iscroll'
 import VueLazyload from 'vue-lazyload'
 import plugin from './plugin'
 import { Toast } from 'vant';
+import { Dialog } from 'vant';
+
+// 全局注册
+Vue.use(Dialog);
 Vue.use(Toast);
 Vue.config.productionTip = false
 Vue.use(IScrollView,IScroll)

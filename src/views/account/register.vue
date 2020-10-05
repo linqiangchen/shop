@@ -20,6 +20,7 @@
 
 <script>
 import axios from 'axios'
+import { Dialog } from "vant";
 export default {
   name:'register',
   data(){
@@ -40,9 +41,14 @@ export default {
       axios
         .post("/api/user/register", { user: this.user, pass: this.pass })
         .then((res) => {
-         alert(res.data.msg)
+         this.$toast(res.data.msg)
           if (res.data.code === 0) {
-            this.$router.push("/login");
+            Dialog.alert({
+              message: "注册成功，前往登录",
+            }).then(() => {
+           this.$router.replace('/login')
+            });
+           
           }
         });
     },

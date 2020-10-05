@@ -3,7 +3,8 @@ export default{
     namespaced: true,
     state: {
         login:-1,
-        info:{}
+        info:{},
+        address:[]
     },
     mutations: {
         setLogin(state,bool){
@@ -11,6 +12,9 @@ export default{
         },
         setInfo(state,obj){
             state.info = obj
+        },
+        setAddress(state,obj){
+            state.address = obj
         }
     },
     actions: {
@@ -22,5 +26,9 @@ export default{
             const result = await  axios.get('/api/user/info')
             context.commit('setInfo',result.data.data)
           },
-    },
+          async getAddress(context){
+            const result = await  axios.get('/api/user/getAddress')
+            context.commit('setAddress',result.data.data)
+          },
+}
 }

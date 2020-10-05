@@ -32,7 +32,7 @@ export default {
       axios
         .post("/api/user/login", { user: this.user, pass: this.pass })
         .then((res) => {
-         alert(res.data.msg)
+         this.$toast(res.data.msg)
           if (res.data.code === 0) {
             this.$store.commit("user/setLogin", true);
             this.$router.push("/");

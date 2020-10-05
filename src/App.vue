@@ -14,7 +14,7 @@
 export default {
   name:'App',
   created() {
-  
+      this.$store.dispatch('user/getAddress')
   },
   data(){
     return {

@@ -13,7 +13,14 @@ const routes = [{
   {
     path: '/good',
     name: 'Good',
-    component: () => import( /* webpackChunkName: "about" */ '../views/good/Good.vue')
+    component: () => import( /* webpackChunkName: "about" */ '../views/good/Good.vue'),
+    children:[
+      {
+        path:'detail',
+        name:'detail',
+        component:()=> import('../views/good/detail.vue')
+      }
+    ]
   },
   {
     path: '/cart',
@@ -27,18 +34,17 @@ const routes = [{
     children: [{
         path: 'addressEdit',
         name: 'Edit',
-        // route level code-splitting
-        // this generates a separate chunk (about.[hash].js) for this route
-        // which is lazy-loaded when the route is visited.
         component: () => import( /* webpackChunkName: "about" */ '../views/mine/Edit .vue'),
       },
       {
         path: 'AddressList',
         name: 'AddressList',
-        // route level code-splitting
-        // this generates a separate chunk (about.[hash].js) for this route
-        // which is lazy-loaded when the route is visited.
         component: () => import( /* webpackChunkName: "about" */ '../components/AddressList.vue'),
+      },
+      {
+        path: 'updatePass',
+        name: 'updatePass',
+        component: () => import( /* webpackChunkName: "about" */ '../views/mine/updatePass.vue'),
       },
       {
         path: 'userInfo',

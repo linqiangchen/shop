@@ -68,8 +68,8 @@
                 <span>个人信息</span>
                  <i class="iconfont iconyou-copy"></i>
             </li>
-            <li class="j-s-a"  @click="toggleRouter('/')">
-                <span>账户管理</span>
+            <li class="j-s-a"  @click="toggleRouter('/mine/updatePass')">
+                <span>修改密码</span>
                  <i class="iconfont iconyou-copy"></i>
             </li>
             <li class="j-s-a" @click="logout">
