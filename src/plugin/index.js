@@ -36,10 +36,8 @@ export default {
                }
            },
            created () {
-               if(this.notShow){
-                   
-                   this.minShowBack = false
-                   
+               if(this.notShow){   
+                   this.minShowBack = false  
                }
            }
         })

@@ -28,6 +28,16 @@ const routes = [{
     component: () => import( /* webpackChunkName: "about" */ '../views/cart/Cart.vue')
   },
   {
+    path: '/order',
+    name: 'order',
+    component: () => import( /* webpackChunkName: "about" */ '../views/good/order.vue')
+  },
+  {
+    path: '/payment',
+    name: 'payment',
+    component: () => import( /* webpackChunkName: "about" */ '../views/good/payment.vue')
+  },
+  {
     path: '/mine',
     name: 'Mine',
     component: () => import( /* webpackChunkName: "about" */ '../views/mine/Mine.vue'),
@@ -42,9 +52,22 @@ const routes = [{
         component: () => import( /* webpackChunkName: "about" */ '../components/AddressList.vue'),
       },
       {
+        path: 'orderList',
+        name: 'orderList',
+        component: () => import( /* webpackChunkName: "about" */ '../views/mine/orderList.vue'),
+        children:[
+          {
+            path: 'comment',
+        name: 'comment',
+        component: () => import( /* webpackChunkName: "about" */ '../views/mine/comment.vue'),
+          }
+        ]
+      },
+      {
         path: 'updatePass',
         name: 'updatePass',
         component: () => import( /* webpackChunkName: "about" */ '../views/mine/updatePass.vue'),
+        
       },
       {
         path: 'userInfo',

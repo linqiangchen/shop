@@ -6,45 +6,39 @@
 
     <div class="nav j-s-a">
       <div class="search">
-        <input type="text" class="inp" placeholder="请输入关键词" />
-        <span><i class="iconfont iconsearch1"></i></span>
+        <input type="text" class="inp" placeholder="请输入关键词" v-model="kw"/>
+        <span @click="search"><i class="iconfont iconsearch1"></i></span>
       </div>
       <div class="classify j-s-a" @click="show(true)">
         <i class="iconfont iconliebiao"></i>
-        <span>分类</span>
+        <span>{{selectClassify}}</span>
       </div>
       <div class="mask" @click="show(false)" v-show="showMask">
         <ul>
-            <li>全部分类</li>
-            <li @click="demo">手链</li>
-            <li>项链</li>
-            <li>耳环</li>
-            <li>头饰</li>
-            <li>其他</li>
+            <li @click="classify(-1)">全部分类</li>
+            <li @click="classify('手链')">手链</li>
+            <li @click="classify('项链')">项链</li>
+            <li @click="classify('耳环')">耳环</li>
+            <li @click="classify('腕表')">腕表</li>
+            <li @click="classify('其他')">其他</li>
         </ul>
       </div>
     </div>
-
-
     <div class="list">
-        <ul class="list-nav flex">
-            <li>综合</li>   
-            <li>销量</li>  
-            <li>新品</li>  
-            <li class="price"><span>价格</span><span class="order"><i class="top"></i><i class="bottom"></i></span></li>  
+        <ul class="list-nav flex"> 
+            <li class="price" :class="{active:index===orderState}" v-for="(item,index) in orderList" :key="item.rule" @click="handleOrder(index)"> <span>{{item.title}}</span><span class="order" ><i class="top"  :class="{selectOrderBottom:item.state === 0}"></i><i class="bottom" :class="{selectOrderTop:item.state === 1}"></i></span></li>  
         </ul>
-         <iscroll-view class="content" @scrollStart="log" ref="iscroll">
-            <list></list>
+         <iscroll-view class="content" @scrollStart="log" @pullUp="load" ref="iscroll">
+            <list :data="goodList"></list>
          </iscroll-view>
     </div>
     <router-view></router-view>
   </div>
 </template>
-
 <script>
 // @ is an alias to /src
 import list from "@/components/list.vue";
-
+import { mapState } from 'vuex';
 export default {
   name: "Good",
   components: {
@@ -52,21 +46,96 @@ export default {
   },
   data(){
       return{
-          showMask:false
+          showMask:false,
+          offset:1,
+          select:-1,
+          kw:'',
+          orderState:0,
+          goodList:[],
+          orderList:[{
+            rule:'oldPrice',
+            title:'综合',
+            state:0,
+          },
+          {
+            rule:'sale',
+            title:'销量',
+            state:0,
+          },
+          {
+            rule:'id',
+            title:'新品',
+            state:0,
+          },
+          {
+            rule:'price',
+            title:'价格',
+            state:0,
+          },
+          ]
       }
+  },
+  computed: {
+    ...mapState({
+      allGood:state=>state.good.allGood
+    }),
+    selectClassify(){
+      return this.select === -1? '全部':this.select
+    },
+    showGood(){
+      let list = JSON.parse(JSON.stringify(this.allGood))
+      return list
+    }
+  },
+  watch: {
+    allGood:{
+      handler(newVAl){  
+        this.goodList = JSON.parse(JSON.stringify(newVAl))
+      },
+      immediate:true
+    }
+  },
+  created() {
+    this.$store.dispatch('good/getAllGood',{sort:this.orderList[this.orderState].rule,offset:1,state:-1})
   },
   methods: {
       show(bool){
           this.showMask = bool
       },
-      demo(){
-          console.log(11111);
+      sort(){
+        this.goodList = this.goodList.sort((a,b)=> a[this.orderList[this.orderState].rule] - b[this.orderList[this.orderState].rule])
+      },
+      handleOrder(index){
+        this.$refs.iscroll.scrollTo(0,0,0)
+        if(index === this.orderState){
+          this.orderList[index].state = (this.orderList[index].state +1)%2 ;
+          this.$store.dispatch('good/getAllGood',{sort:this.orderList[this.orderState].rule,offset:1,state:this.orderList[this.orderState].state})
+        }else{
+          this.orderState = index
+           this.$store.dispatch('good/getAllGood',{sort:this.orderList[this.orderState].rule,offset:1,state:this.orderList[this.orderState].state})
+        }
+      },
+      search(){
+        this.select = '搜索'
+        this.offset = 1;
+        this.$store.dispatch('good/searchGood',{kw:this.kw,offset:this.offset})
+      },
+      load(){
+        if(this.select === -1){
+      this.offset++;
+       this.$store.dispatch('good/getAllGood',{
+         sort:this.orderList[this.orderState].rule,
+         offset:this.offset
+         ,state:this.orderList[this.orderState].state})
+        }
+      },
+      classify(data){
+        this.select = data
+          this.$store.dispatch('good/getClassifyGood',data)
       }
   },
 };
 </script>
-
-
 <style lang="scss" scoped>
 .header {
   background-color: #fff;
@@ -151,11 +220,11 @@ export default {
     }
 }
 .content{
-    padding: 0 10px;
+    padding: 5px 10px;
   position: absolute;
   top: 164px;
   bottom: 0px;
- background-color: #fff;
+ background-color: #f2f2f2;
   left: 0;
   right: 0;
   overflow: hidden;
@@ -175,6 +244,16 @@ export default {
             font-size: 18px;
             color: #333;
         }
+         .active{
+                color: #2D8CF0;
+                border-bottom: 1PX #2D8CF0 solid;
+                .selectOrderBottom{
+                  border-bottom-color: #2D8CF0 !important;
+                }
+                .selectOrderTop{
+                  border-top-color: #2D8CF0 !important;
+                }
+            }
         .price{
             display: flex;
             align-items: center;

@@ -4,7 +4,9 @@ export default{
     state: {
         login:-1,
         info:{},
-        address:[]
+        address:[],
+        selectAddress:null,
+        order:[],
     },
     mutations: {
         setLogin(state,bool){
@@ -13,8 +15,14 @@ export default{
         setInfo(state,obj){
             state.info = obj
         },
+        setOrder(state,obj){
+            state.order = obj
+        },
         setAddress(state,obj){
             state.address = obj
+        },
+        setSelectAddress(state,obj){
+            state.selectAddress = obj
         }
     },
     actions: {
@@ -29,6 +37,11 @@ export default{
           async getAddress(context){
             const result = await  axios.get('/api/user/getAddress')
             context.commit('setAddress',result.data.data)
+          },
+          async getOrder(context){
+            const result = await  axios.get('/api/order/getMyOrder')
+            
+            context.commit('setOrder',result.data.data)
           },
 }
 }

@@ -59,6 +59,7 @@ axios.post('/api/user/addAddress',{
   isDefault:address.isDefault
 }).then((res)=>{
   console.log(res);
+   this.$store.dispatch('user/getAddress')
 })
     },
     onDelete() {

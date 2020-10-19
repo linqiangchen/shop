@@ -94,7 +94,7 @@ export default {
     border: 1px #ccc solid;
   }
   label {
-    width: 60px;
+    width: 80px;
     height: 45px;
     line-height: 45px;
     text-align-last: justify;

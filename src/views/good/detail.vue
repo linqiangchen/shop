@@ -10,33 +10,9 @@
       <div class="banner">
         <div class="swiper-container" ref="swiper">
           <div class="swiper-wrapper">
-            <div class="swiper-slide">
+            <div class="swiper-slide" v-for="(item,index) in curGood.detail" :key="index">
               <img
-                src="http://p4.music.126.net/arTjzcQnO6iChdJPSLKt7g==/109951163568667244.jpg"
-                alt=""
-              />
-            </div>
-            <div class="swiper-slide">
-              <img
-                src="http://p3.music.126.net/9JEWZ5bFWiVkaleYtn7X5Q==/109951164500007635.jpg"
-                alt=""
-              />
-            </div>
-            <div class="swiper-slide">
-              <img
-                src="http://p4.music.126.net/S-ALyDLWPk4NfLjbs8fB2A==/109951164722036328.jpg"
-                alt=""
-              />
-            </div>
-            <div class="swiper-slide">
-              <img
-                src="http://p3.music.126.net/MSh8GMAZOrsp8H-9d1aKzw==/18600438209269609.jpg"
-                alt=""
-              />
-            </div>
-            <div class="swiper-slide">
-              <img
-                src="http://p4.music.126.net/7jJXXMyzAHsMy0ZJIDxVxw==/109951165145898235.jpg"
+                :src="item"
                 alt=""
               />
             </div>
@@ -46,16 +22,16 @@
         </div>
       </div>
       <div class="info">
-        <h1>【硬核守护】12星座守护项链 s925纯银</h1>
+        <h1>{{curGood.title}}</h1>
         <p class="j-s-a">
-          <span class="flex price"><i>￥168</i> <i class="line">￥188</i></span>
+          <span class="flex price"><i>￥{{curGood.price}}</i> <i class="line">￥{{curGood.price + curGood.oldPrice}}</i></span>
           <span class="share">分享</span>
         </p>
       </div>
       <div class="message">
         <div class="flex">
           <span>发货</span>
-          <p class="j-s-a"><span>快递：￥10</span><span>已售 100</span></p>
+          <p class="j-s-a"><span>快递：￥10</span><span>已售 {{curGood.sale}}</span></p>
         </div>
         <p>
           <span>服务</span><span>收货后结算 · 7天无理由退货 · 支持退换</span>
@@ -67,19 +43,19 @@
           <a href="">查看全部</a>
         </p>
         <ul>
-          <li v-for="item in 3" :key="item">
+          <li v-for="item in comment" :key="item.id">
             <div class="top j-s-a">
               <img
-                src="/public/avatar/1601423764922-wallhaven-633071.jpg"
+                :src="item.user.avatar"
                 alt=""
               />
               <div class="user">
-                <p>忘川</p>
-                <p>一天前</p>
+                <p>{{item.user.name}}</p>
+                <p>{{item.user.time}}</p>
               </div>
-              <van-rate v-model="value" />
+              <van-rate v-model="item.star" readonly/>
             </div>
-            <p>不错不错，很喜欢。不错不错，很喜欢。不错不错，很喜欢。</p>
+            <p>{{item.con}}</p>
           </li>
         </ul>
       </div>
@@ -97,17 +73,17 @@
         <div class="title">
         <p class="j-s-a">
         <span></span>
-        <span class="price">￥168</span>
+        <span class="price">￥{{curGood.price}}</span>
         <span @click="close"><i class="iconfont iconclosewhite"></i></span>
         </p>
-        <p>剩余999件</p>
-        <p>已选择白羊座</p>
+        <p>剩余{{curGood.count}}件</p>
+        <p>已选 {{curGood.sku[select].title}}</p>
         </div>
         <h1>选择款式</h1>
         <ul>
-        <li v-for="item in 12" :key="item" :class="{active : item === 1}">
-        <div><img src="http://p4.music.126.net/S-ALyDLWPk4NfLjbs8fB2A==/109951164722036328.jpg" alt="">
-        <p>白羊座</p></div>
+        <li v-for="(item ,index) in curGood.sku" :key="index" :class="{active : select === index}" @click="handleSelect(index)">
+        <div><img :src="item.img" alt="">
+        <p>{{item.title}}</p></div>
         </li>
         </ul>
         <div class="count j-s-a">
@@ -115,20 +91,18 @@
         <p><van-stepper v-model="count" /></p>
         </div>
         <div class="btn j-s-a">
-        <span class="cart">加入购物车</span>
-        <span class="buy">立即购买</span>
+        <span class="cart" @click="addCart">加入购物车</span>
+        <span class="buy" @click="order">立即购买</span>
         </div>
     </div>
   </div>
 </template>
-
 <script>
 import Vue from "vue";
-
+import axios from 'axios'
 import { GoodsAction, GoodsActionIcon, Rate, GoodsActionButton } from "vant";
-
 import { Stepper } from 'vant';
-
+import { mapState } from 'vuex';
 Vue.use(Stepper);
 Vue.use(Rate);
 Vue.use(GoodsAction);
@@ -139,8 +113,8 @@ export default {
     return {
       value: 3,
     count:1,
-    show:false
-     
+    show:false,
+     select:0
     };
   },
 methods: {
@@ -149,7 +123,29 @@ methods: {
     },
     close(){
         this.show = false
+    },
+    handleSelect(index){
+      this.select = index
+    },
+    addCart(){
+      axios.post('/api/cart/addCart',{
+        goodID:this.curGood._id,
+        sku:this.curGood.sku[this.select].title,
+        count:this.count
+      }).then(res =>{
+         this.$toast(res.data.msg)
+      })
+    },
+    order(){
+      this.$store.commit('good/setSelect',{count:this.count,sku:this.curGood.sku[this.select].title})
+      this.$router.push({name:'order'})
     }
+},
+computed: {
+  ...mapState({
+    curGood :state=> state.good.curGood,
+    comment :state=> state.good.comment
+  })
 },
   mounted() {
     this.$nextTick(() => {

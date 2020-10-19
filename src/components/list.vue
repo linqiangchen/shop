@@ -1,15 +1,17 @@
 <template>
       <div class="recommend">
+      <div class="tit">
         <slot></slot>
+        </div>
         <ul>
-          <li v-for="item in 16" :key="item" @click="link">
+          <li v-for="(item ,index) in data" :key="index" @click="link(item)">
             <img
-              src="http://p4.music.126.net/S-ALyDLWPk4NfLjbs8fB2A==/109951164722036328.jpg"
+              :src="item.img"
               alt=""
             />
-            <p class="tit">【硬核守护】12星座守护项链 s925纯银</p>
+            <p class="tit">{{item.title}}</p>
             <p class="j-s-a">
-              <span class="now">￥168</span><span class="old seale">10人付款</span>
+              <span class="now">￥{{item.price}}</span><span class="old seale">{{item.sale}}人付款</span>
             </p>
           </li>
         </ul>
@@ -18,8 +20,15 @@
 
 <script>
 export default {
+  props:{
+     data:{
+       type:Array
+     }
+  },
   methods: {
-    link(){
+    link(item){
+      this.$store.commit('good/setCurGood',item)
+      this.$store.dispatch('good/getComment',item._id)
       this.$router.push({name:'detail'})
     }
   },
@@ -28,15 +37,17 @@ export default {
 
 <style lang="scss" scoped>
 .recommend {
-  background-color: #f5f7f8;
+   background-color: #f2f2f2;
 
   text-align: left;
+
   h2 {
     background-color: #fff;
     text-align: left;
     padding: 10px 0;
     font-size: 18px;
     font-weight: bold;
+   
     a {
       font-size: 14px;
       color: #2d8cf0;
@@ -47,11 +58,15 @@ export default {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    background-color: #fff;
+    background-color: #f2f2f2;
+     
     li {
-      width: 175px;
+      width: 49%;
+      padding: 10px;
       margin-bottom: 10px;
       background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 5px 5px 10px #ccc;
       img {
         width: 100%;
         height: 125px;

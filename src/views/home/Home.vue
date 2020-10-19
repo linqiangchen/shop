@@ -4,8 +4,8 @@
         <h1>商城首页</h1>
     </div>
     <div class="search">
-      <input type="text" class="inp" placeholder="请输入关键词" />
-      <span><i class="iconfont iconsearch1"></i></span>
+      <input type="text" class="inp" placeholder="请输入关键词" v-model="kw" />
+      <span @click="search"><i class="iconfont iconsearch1"></i></span>
     </div>
     <iscroll-view class="content" @scrollStart="log" ref="iscroll">
       <div>
@@ -13,31 +13,31 @@
           <div class="swiper-wrapper">
             <div class="swiper-slide">
               <img
-                src="http://p4.music.126.net/arTjzcQnO6iChdJPSLKt7g==/109951163568667244.jpg"
+                src="https://res.gucci.cn/resources/2020/9/8/15995493224698345_content_HeroRegularMedium_768x386_1599212712_HeroRegularMedium_S03-FS-071_001_Default.jpg"
                 alt=""
               />
             </div>
             <div class="swiper-slide">
               <img
-                src="http://p3.music.126.net/9JEWZ5bFWiVkaleYtn7X5Q==/109951164500007635.jpg"
+                src="https://res.gucci.cn/resources/2020/9/8/1599549805110883_content_HeroRegularStandard_1600x675_1599213605_HeroRegularStandard_S03-FS-069_001_Default.jpg"
                 alt=""
               />
             </div>
             <div class="swiper-slide">
               <img
-                src="http://p4.music.126.net/S-ALyDLWPk4NfLjbs8fB2A==/109951164722036328.jpg"
+                src="https://res.gucci.cn/resources//2020/9/7/1599449432133816_content_HeroRegularStandard_1600x675_1596722404_HeroRegularStandard_BloomRevival-Portfolio-hero_001_Default.jpg"
                 alt=""
               />
             </div>
             <div class="swiper-slide">
               <img
-                src="http://p3.music.126.net/MSh8GMAZOrsp8H-9d1aKzw==/18600438209269609.jpg"
+                src="https://res.gucci.cn/resources//2020/6/16/15922869546903693_content_HeroRegularStandard_1600x675_1589884211_HeroRegularStandard_OFFTHEGRID-05_001_Default.jpg"
                 alt=""
               />
             </div>
             <div class="swiper-slide">
               <img
-                src="http://p4.music.126.net/7jJXXMyzAHsMy0ZJIDxVxw==/109951165145898235.jpg"
+                src="https://res.gucci.cn/resources/2020/9/9/15996442573617930_content_HeroRegularStandard_1600x675_1599638409_HeroRegularStandard_S03-FS-GGWJ-08_001_Default.jpg"
                 alt=""
               />
             </div>
@@ -55,15 +55,15 @@
           <p class="j-s-a">
             <span class="tit">周年庆优惠券</span><span class="get">领取</span>
           </p>
-          <p class="time">有效期：2020-09-30</p>
+          <p class="time">有效期：2020-12-30</p>
           <p>购物满100即可使用</p>
         </div>
       </div>
 
-     <list>
+     <list :data="recommend">
       <h2 class="j-s-a">优惠推荐</h2>
      </list>
-    <list>
+    <list :data="newGood">
       <h2 class="j-s-a">最新出品 <a href="">查看全部</a></h2>
     </list>
     </iscroll-view>
@@ -73,16 +73,36 @@
 <script>
 // @ is an alias to /src
 import list from "@/components/list.vue";
+import { mapState } from 'vuex';
 
 export default {
   name: "Home",
   components: {
     list,
   },
+  data(){
+    return {
+      kw:''
+    }
+  },
   methods: {
-    log(e) {
-      e.refresh();
-    },
+     search(){
+        this.select = '搜索'
+        this.offset = 1;
+        this.$store.dispatch('good/searchGood',{kw:this.kw,offset:this.offset})
+        this.$router.push('/good')
+      },
+  },
+  computed: {
+    ...mapState({
+     recommend:state => state.good.recommend,
+     newGood:state => state.good.new
+    })
+  },
+  created() {
+    this.$store.dispatch('user/getAddress')
+    this.$store.dispatch('good/getRecommend')
+     this.$store.dispatch('good/getNew')
   },
   mounted() {
     this.$nextTick(() => {
@@ -90,6 +110,8 @@ export default {
         pagination: {
           el: ".swiper-pagination",
         },
+        autoplay:true,
+        loop : true,
       });
     });
   },
@@ -104,9 +126,9 @@ export default {
 .content {
   padding: 0 10px;
   position: absolute;
-  top: 84px;
+  top: 94px;
   bottom: 0px;
-
+background-color: #f2f2f2;
   left: 0;
   right: 0;
   overflow: hidden;
@@ -202,5 +224,4 @@ export default {
     }
   }
 }
-
 </style>

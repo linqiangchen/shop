@@ -14,7 +14,6 @@
   @edit="onEdit"
 /></div>
 </template>
-
 <script>
 import { Toast } from 'vant';
 import Vue from 'vue';
@@ -26,8 +25,6 @@ export default {
   data() {
     return {
       chosenAddressId: '1',
-     
-
     };
   },
   computed: {
@@ -50,6 +47,10 @@ export default {
         address:item.location + item.detail,
         _id:item._id
       }))
+    },
+    chosenAddressId(newVal){
+      this.$store.commit('user/setSelectAddress',this.list[newVal])
+      this.$router.back()
     }
   },
   methods: {
@@ -62,7 +63,6 @@ export default {
   },
 };
 </script>
-
 <style scoped lang="scss">
   .sub{
       .header{
